@@ -8,12 +8,13 @@ import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 export const LoginPage = ({ firebase, auth }) => (
   <div>
     <button // <GoogleButton/> button can be used instead
-      onClick={() => firebase.login({ provider: 'google', type: 'popup' })}
+      onClick={() => firebase.login({ provider: 'google', type: 'redirect' })}
     >Login With Google</button>
+    <button onClick={() => firebase.logout()}>Logout</button>
     <div>
       <h2>Auth</h2>
       {
-        isLoaded(auth)
+        !isLoaded(auth)
           ? <span>Loading...</span>
           : isEmpty(auth)
             ? <span>Not Authed</span>
