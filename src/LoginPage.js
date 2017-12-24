@@ -40,8 +40,9 @@ export class LoginPage extends Component {
             this.props.firebase.auth().fetchProvidersForEmail(email)
               .then((providers) => {
                 if (providers[0] === 'password') {
-                  // prompt user for password
-                  console.log(providers);
+                  console.log('email/password account');
+                  // TODO prompt user for password
+                  this.props.firebase.auth().signInWithEmailAndPassword();
                   return;
                 } else {
                   const provider = this.getProviderForProviderId(providers[0]);
@@ -53,9 +54,36 @@ export class LoginPage extends Component {
     }
   }
 
+  register = () => {
+    this.props.firebase.createUser({ email: this.state.email, password: this.state.password })
+      .then(user => console.log(user))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  login = () => {
+    this.props.firebase.login({ email: this.state.email, password: this.state.password })
+      .then(user => console.log(user))
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  };
+
   render() {
     return (
       <div>
+        <input type="email" name="email" onChange={this.handleChange} />
+        <input type="password" name="password" onChange={this.handleChange} />
+        <button onClick={this.register}>Register</button>
+        <button onClick={this.login}>Login</button>
+        <br />
         <button // <GoogleButton/> button can be used instead
           onClick={() => this.props.firebase.login({ provider: 'google', type: 'redirect' })}>
           Login With Google</button>
@@ -72,7 +100,7 @@ export class LoginPage extends Component {
                 : <pre>{JSON.stringify(this.props.auth, null, 2)}</pre>
           }
         </div>
-      </div>
+      </div >
     )
   };
 };
