@@ -91,13 +91,19 @@ export class LoginPage extends Component {
           Login with Facebook</button>
         <button onClick={() => this.props.firebase.logout()}>Logout</button>
         <div>
-          <h2>Auth</h2>
+          <h2>Authentication</h2>
           {
             !isLoaded(this.props.auth)
               ? <span>Loading...</span>
               : isEmpty(this.props.auth)
                 ? <span>Not Authed</span>
-                : <pre>{JSON.stringify(this.props.auth, null, 2)}</pre>
+                : 
+                <React.Fragment>
+                  <p>auth</p>
+                  <pre>{JSON.stringify(this.props.auth, null, 2)}</pre>
+                  <p>profile</p>
+                  <pre>{JSON.stringify(this.props.profile, null, 2)}</pre>
+                </React.Fragment>
           }
         </div>
       </div >
@@ -113,6 +119,6 @@ LoginPage.propTypes = {
 };
 
 export default compose(
-  firebaseConnect(), // withFirebase can also be used
-  connect(({ firebase: { auth } }) => ({ auth }))
+  firebaseConnect(),
+  connect(({ firebase: { auth, profile } }) => ({ auth, profile }))
 )(LoginPage);
