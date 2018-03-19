@@ -70,6 +70,23 @@ export class LoginPage extends Component {
       });
   };
 
+  facebookAppLogin = () => {
+    const loginSuccess = userData => {
+      console.log("user data", userData);
+      const accessToken = userData.authResponse.accessToken;
+      const credential = this.props.firebase.auth.FacebookAuthProvider.credential(accessToken);
+      this.props.firebase.login({ credential });
+    };
+
+    const loginError = error => {
+      console.error(error)
+    };
+
+    if (window.facebookConnectPlugin) {
+      window.facebookConnectPlugin.login(["public_profile"], loginSuccess, loginError);
+    }
+  };
+
   handleChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value
@@ -89,6 +106,7 @@ export class LoginPage extends Component {
           Login With Google</button>
         <button onClick={() => this.props.firebase.login({ provider: 'facebook', type: 'redirect' })}>
           Login with Facebook</button>
+        <button onClick={this.facebookAppLogin}>Facebook App Login</button>
         <button onClick={() => this.props.firebase.logout()}>Logout</button>
         <div>
           <h2>Authentication</h2>
@@ -97,7 +115,7 @@ export class LoginPage extends Component {
               ? <span>Loading...</span>
               : isEmpty(this.props.auth)
                 ? <span>Not Authed</span>
-                : 
+                :
                 <React.Fragment>
                   <p>auth</p>
                   <pre>{JSON.stringify(this.props.auth, null, 2)}</pre>
